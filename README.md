@@ -1,9 +1,3 @@
-<!--
-*** Bintang Fajarianto
-*** NIM 13519138
-*** 27 Januari 2021
--->
-
 <p align="center">
   <img src="https://ditsti.itb.ac.id/wp-content/uploads/2020/09/logo_itb_256.png" alt="Logo" width="100" height="100">
 </p>
