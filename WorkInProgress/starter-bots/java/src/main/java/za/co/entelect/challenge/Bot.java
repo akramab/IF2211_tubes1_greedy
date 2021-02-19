@@ -36,9 +36,13 @@ public class Bot {
         Worm enemyWorm = getFirstWormInRangeSpecial();
         if (enemyWorm != null) {
             if (gameState.myPlayer.worms[1].id == gameState.currentWormId) {
-                return new BananaBombCommand(enemyWorm.position.x, enemyWorm.position.y);
+                if (gameState.myPlayer.worms[1].bananaBombs.count > 0) {
+                    return new BananaBombCommand(enemyWorm.position.x, enemyWorm.position.y);
+                }
             }
-            return new SnowballCommand(enemyWorm.position.x, enemyWorm.position.y);
+            if (gameState.myPlayer.worms[2].snowballs.count > 0) {
+                return new SnowballCommand(enemyWorm.position.x, enemyWorm.position.y);
+            }
         }
 
         System.out.println(gameState.myPlayer.worms[1].bananaBombs);
@@ -50,7 +54,7 @@ public class Bot {
         }
 
         List<Cell> surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
-        int cellIdx = random.nextInt(surroundingBlocks.size());
+        
 
         //BUAT DEBUGGING
         for(int i = 0; i < surroundingBlocks.size();i++){
@@ -59,7 +63,7 @@ public class Bot {
             System.out.println(surroundingBlocks.get(i).y);
         }
 
-        Cell block = surroundingBlocks.get(cellIdx);
+        
         if(gameState.currentWormId == 1){
 
             Worm agentWorm = gameState.myPlayer.worms[2];
@@ -87,11 +91,8 @@ public class Bot {
         //followCommand
         Worm commandoWorm = gameState.myPlayer.worms[0];
         //int commandoPositionY = gameState.worms[0].position.y;
-        if (true) {
-            // List<Cell> surroundingBlocks = getSurroundingCells(currentWorm.position.x, currentWorm.position.y);
+        if (commandoWorm.health > 0) {
             Cell cellCommandoWorm = surroundingBlocks.get(0);
-            // cellCommandoWorm.x = commandoWorm.position.x;
-            // cellCommandoWorm.y = commandoWorm.position.y;
 
             //getShortestPath
             Cell shortestCellToCommander = getShortestPath(surroundingBlocks, commandoWorm.position.x, commandoWorm.position.y);
@@ -119,7 +120,15 @@ public class Bot {
             
         }
 
-        //
+        // MOVE RANDOMLY IF POSSIBLE
+        int cellIdx = random.nextInt(surroundingBlocks.size());
+        Cell block = surroundingBlocks.get(cellIdx);
+        if (block.type == CellType.AIR) {
+            return new MoveCommand(block.x, block.y);
+        } else if (block.type == CellType.DIRT) {
+            return new DigCommand(block.x, block.y);
+        }
+        // IF NOTHING ELSE
         return new DoNothingCommand();
         
     }
@@ -248,10 +257,18 @@ public class Bot {
             for (int j = y - 1; j <= y + 1; j++) {
                 // Don't include the current position i != x && j != y &&
                 if ( isValidCoordinate(i, j)) {
+                    if (i == x && j == y) {
+                        continue;
+                    } else {
                     cells.add(gameState.map[j][i]);
+                    }
                 }
             }
         }
+        System.out.println("KOORDINAT SEKARANG:");
+        System.out.print(x);
+        System.out.print(" ");
+        System.out.println(y);
 
         return cells;
     }
