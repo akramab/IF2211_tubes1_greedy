@@ -137,7 +137,7 @@ public class Bot {
 
         for (Worm enemyWorm : opponent.worms) {
             String enemyPosition = String.format("%d_%d", enemyWorm.position.x, enemyWorm.position.y);
-            if (cells.contains(enemyPosition)) {
+            if (cells.contains(enemyPosition) && enemyWorm.health > 0) {
                 return enemyWorm;
             }
         }
@@ -158,6 +158,9 @@ public class Bot {
             for (Worm enemyWorm : opponent.worms) {
 
                 if (euclideanDistance(currentWorm.position.x, currentWorm.position.y, enemyWorm.position.x, enemyWorm.position.y) > range) {
+                    continue;
+                }
+                if (enemyWorm.health <= 0) {
                     continue;
                 }
                 //AUTO NYERANG WORM YANG PERTAMAKALI DITEMUKAN DI DALAM RANGE
